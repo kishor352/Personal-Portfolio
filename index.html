@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Dancing+Script:wght@400..700&family=Pacifico&family=Playwrite+NZ+Basic:wght@100..400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&display=swap"
         rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
@@ -15,6 +15,8 @@
 </head>
 
 <body>
+    <canvas id="bg-canvas" class="bg-canvas"></canvas>
+
     <div class="navbar">
         <div class="logo">Portfolio</div>
         <input type="checkbox" id="menu-toggle">
@@ -25,9 +27,10 @@
             <a href="#skills">Skills</a>
             <a href="#projects">Projects</a>
             <a href="#education">Education</a>
+            <a href="#resume">Resume</a>
         </div>
 
-        <button>Contact</button>
+        <a href="mailto:kishorace10@gmail.com" class="nav-contact">Contact</a>
     </div>
 
     <div class="home">
@@ -45,7 +48,7 @@
                 I’m constantly learning, experimenting, and pushing my limits to become a better developer every day.
             </p>
 
-            <button>Contact →</button>
+            <a href="mailto:kishorace10@gmail.com" class="primary-contact">Contact →</a>
         </div>
 
         <div class="kishor-img">
@@ -97,40 +100,7 @@
 
         <h2 class="title">Skill</h2>
 
-        <div class="card-container">
-            <div class="card">
-                <span class="number">1</span>
-                <img src="./assest/pngwing.com - 2025-05-20T183408.189 1.png" alt="HTML logo">
-                <button>HTML</button>
-            </div>
-            <div class="card">
-                <span class="number">2</span>
-                <img src="./assest/pngwing.com - 2025-05-20T183408.189 2.png" alt="CSS logo">
-                <button>CSS</button>
-            </div>
-            <div class="card">
-                <span class="number">3</span>
-                <img src="./assest/pngwing.com - 2025-05-20T183408.189 3.png" alt="JavaScript logo">
-                <button>JavaScript</button>
-            </div>
-            <div class="card">
-                <span class="number">4</span>
-                <img src="./assest/pngwing.com - 2025-05-20T183408.189 4.png" alt="React JS logo">
-                <button>React JS</button>
-            </div>
-            <div class="card">
-                <span class="number">5</span>
-                <img
-                    src="https://assets-global.website-files.com/6377ac1a39ff1e65214224e5/64d26ed75e39c4c591e01c3d_64c96a772785e6db2d21f850_java-logo-transparent-free-png.png"
-                    alt="Java logo">
-                <button>Java</button>
-            </div>
-            <div class="card">
-                <span class="number">6</span>
-                <img src="./assest/bootstrap-logo.png" alt="Bootstrap logo">
-                <button>Bootstrap</button>
-            </div>
-        </div>
+        <div class="card-container" id="skill-container"></div>
 
     </div>
 
@@ -174,6 +144,25 @@
         </div>
     </div>
 
+    <section class="resume-section" id="resume">
+        <h2 class="title">Resume</h2>
+
+        <div class="resume-card">
+            <div class="resume-text">
+                <h3>Download My Resume</h3>
+                <p>
+                    I’m a passionate Full Stack Developer with experience in modern web technologies,
+                    responsive UI development, and problem-solving. Download my resume to know more about
+                    my skills, education, projects, and professional background.
+                </p>
+            </div>
+
+            <a class="resume-button" href="./resume/Kishor.pdf" download="Kishor.pdf">
+                <i class="fa-solid fa-download"></i> Download Resume
+            </a>
+        </div>
+    </section>
+
     <section class="contact">
         <h1>Contact Me</h1>
 
@@ -206,8 +195,319 @@
 
         </div>
     </section>
+<script>
+    // ---------------------------------------------------------
+// Soft floating particle background with a different motion feel.
+// It stays subtle in the background while keeping the page fresh.
+// ---------------------------------------------------------
 
-    <script src="./index.js"></script>
+(function () {
+    const canvas = document.getElementById("bg-canvas");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const accent = getComputedStyle(document.documentElement)
+        .getPropertyValue("--accent").trim() || "#66e6c9";
+
+    let width, height, particles;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function hexToRgb(hex) {
+        const clean = hex.replace("#", "");
+        const bigint = parseInt(clean, 16);
+        return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+    }
+
+    const [r, g, b] = hexToRgb(accent);
+
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight * Math.max(document.body.scrollHeight / window.innerHeight, 1);
+        canvas.style.height = height + "px";
+        initParticles();
+    }
+
+    function initParticles() {
+        const count = Math.min(55, Math.floor((width * height) / 18000));
+        particles = Array.from({ length: count }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            r: Math.random() * 2.4 + 1.2,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: (Math.random() - 0.5) * 0.35,
+            alpha: Math.random() * 0.7 + 0.2,
+        }));
+    }
+
+    function drawGlow(x, y, radius, alpha) {
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha})`);
+        grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function step() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < -20 || p.x > width + 20) p.vx *= -1;
+            if (p.y < -20 || p.y > height + 20) p.vy *= -1;
+
+            drawGlow(p.x, p.y, 45, p.alpha * 0.15);
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const a = particles[i];
+                const b = particles[j];
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                    const alpha = (1 - dist / 120) * 0.12;
+                    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        if (!prefersReducedMotion) {
+            requestAnimationFrame(step);
+        }
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+    step();
+    setTimeout(resize, 600);
+})();
+
+const skillData = [
+    {
+        name: "HTML",
+        icon: "./assest/pngwing.com - 2025-05-20T183408.189 1.png",
+        code: `&lt;h1&gt;Hello, I am Kishor&lt;/h1&gt;\n&lt;p&gt;I like programming and building useful websites.&lt;/p&gt;`
+    },
+    {
+        name: "CSS",
+        icon: "./assest/pngwing.com - 2025-05-20T183408.189 2.png",
+        code: `.card {\n  background: #111;\n  border-radius: 12px;\n  padding: 20px;\n  box-shadow: 0 10px 30px rgba(0,0,0,.2);\n}`
+    },
+    {
+        name: "JavaScript",
+        icon: "./assest/pngwing.com - 2025-05-20T183408.189 3.png",
+        code: `const name = "Kishor";\nconst age = 20;\nconsole.log(\`I like programming, ${name}!\`);`
+    },
+    {
+        name: "React JS",
+        icon: "./assest/pngwing.com - 2025-05-20T183408.189 4.png",
+        code: `function App() {\n  return &lt;h2&gt;I build UI with React&lt;/h2&gt;;\n}`
+    },
+    {
+        name: "Java",
+        icon: "https://assets-global.website-files.com/6377ac1a39ff1e65214224e5/64d26ed75e39c4c591e01c3d_64c96a772785e6db2d21f850_java-logo-transparent-free-png.png",
+        code: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("I love Java!");\n  }\n}`
+    },
+    {
+        name: "Bootstrap",
+        icon: "./assest/OIP (4).webp",
+        code: `.btn-primary {\n  background: #0d6efd;\n  border-radius: 8px;\n}`
+    }
+];
+
+function renderSkills() {
+    const container = document.getElementById("skill-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    skillData.forEach((skill, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <span class="number">${index + 1}</span>
+            <img src="${skill.icon}" alt="${skill.name} logo">
+            <button type="button" class="skill-trigger" data-skill="${skill.name}">${skill.name}</button>
+            <div class="skill-preview">
+                <div class="skill-preview-header">
+                    <span>Live Example</span>
+                    <span>${skill.name}</span>
+                </div>
+                <pre class="skill-code">${skill.code}</pre>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// ---------------------------------------------------------
+// Project section — data-driven so each project only needs
+// to be defined ONCE here instead of copy-pasted 3 times
+// in the HTML (that copy-paste is what caused the bug where
+// every card showed identical text/images).
+// ---------------------------------------------------------
+
+const projectsData = [
+    {
+        title: "Coffee Shop",
+        image: "https://www.bing.com/th/id/OIP.TeMA2xXzHAQ79hlnIH3nUAHaE8?w=193&h=135&c=8&rs=1&qlt=90&o=6&pid=ImgAns&rm=2",
+        description:
+            "A responsive front-end website for a coffee shop, with a menu showcase, " +
+            "an ordering flow, and a warm, cozy visual theme built with HTML, CSS and JavaScript.",
+        link: "https://kishor352.github.io/Coffee/"
+    },
+    {
+        title: "Code99 IT Institute",
+        image: "https://cdn.builtin.com/cdn-cgi/image/f=auto,fit=contain,w=200,h=200,q=100/sites/www.builtin.com/files/2025-11/Code99%20IT%20Academy.png",
+        description:
+            "A training-institute website featuring course listings, faculty details, " +
+            "admissions info and student testimonials, built to be fast and mobile friendly.",
+        link: "https://kishor352.github.io/Code99-IT-Academy/"
+    },
+    {
+        title: "God of War",
+        image: "https://th.bing.com/th/id/OIP.jLuZ_r6_pf7kBXjTIgqDQQAAAA?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
+        description:
+            "A Norse-mythology-inspired game tribute page with character lore, a screenshot " +
+            "gallery, and smooth hover/scroll animations for an immersive feel.",
+        link: "#"
+    }
+];
+
+function renderProjects() {
+    const list = document.getElementById("project-list");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    projectsData.forEach((project, index) => {
+        const projectEl = document.createElement("div");
+        projectEl.className = "project";
+
+        projectEl.innerHTML = `
+            <div class="projects">
+                <img src="${project.image}" class="img1" alt="${project.title} preview"
+                     onerror="this.style.display='none'">
+                <h3>${project.title}</h3>
+            </div>
+
+            <div class="content">
+                <h3>${project.title}</h3>
+                <br>
+                <p>${project.description}</p>
+                <br>
+                <button data-index="${index}">View</button>
+            </div>
+        `;
+
+        list.appendChild(projectEl);
+    });
+
+    // one listener on the container instead of one per button (event delegation)
+    list.addEventListener("click", handleViewClick);
+}
+
+function handleViewClick(event) {
+    const button = event.target.closest("button[data-index]");
+    if (!button) return;
+
+    const project = projectsData[button.dataset.index];
+
+    if (!project.link || project.link === "#") {
+        alert(`${project.title}: live demo link coming soon!`);
+        return;
+    }
+
+    window.open(project.link, "_blank", "noopener");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderSkills();
+    renderProjects();
+
+    // Reveal animation for section blocks
+    const revealBlocks = document.querySelectorAll(".home, .about, .skills, .project-section, .education, .contact");
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+                entry.target.style.transition = "all 0.9s cubic-bezier(0.22, 1, 0.36, 1)";
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    revealBlocks.forEach((block, index) => {
+        block.style.opacity = "0";
+        block.style.transform = "translateY(24px)";
+        block.style.transitionDelay = `${index * 120}ms`;
+        revealObserver.observe(block);
+    });
+
+    // Hero image 3D drift on mouse move
+    const heroCard = document.querySelector(".kishor-img");
+    if (heroCard) {
+        heroCard.addEventListener("pointermove", (event) => {
+            const rect = heroCard.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+            heroCard.style.transform = `perspective(1200px) rotateX(${(-y * 12).toFixed(2)}deg) rotateY(${(x * 14).toFixed(2)}deg) translateY(-8px)`;
+            heroCard.style.transition = "transform 0.22s ease-out";
+        });
+
+        heroCard.addEventListener("pointerleave", () => {
+            heroCard.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0)";
+            heroCard.style.transition = "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)";
+        });
+    }
+
+    // Skill card hover motion
+    document.querySelectorAll(".card").forEach((card, index) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(26px)";
+        card.style.transition = "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
+        card.style.transitionDelay = `${index * 110}ms`;
+
+        const revealCard = () => {
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+        };
+
+        setTimeout(revealCard, 220 + index * 110);
+
+        card.addEventListener("pointermove", (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+            card.style.transform = `translateY(-8px) rotateX(${(-y * 8).toFixed(2)}deg) rotateY(${(x * 10).toFixed(2)}deg)`;
+            card.style.transition = "transform 0.2s ease-out";
+        });
+
+        card.addEventListener("pointerleave", () => {
+            card.style.transform = "translateY(0) rotateX(0deg) rotateY(0deg)";
+            card.style.transition = "transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)";
+        });
+    });
+});
+</script>
 </body>
 
 </html>
